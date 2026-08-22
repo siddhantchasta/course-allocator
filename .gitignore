@@ -1,0 +1,29 @@
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+bin/
+course-allocator
+
+# Test binary, cover profiles
+*.test
+out.txt
+coverage.out
+coverage-all.out
+
+# macOS specific
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Editor / IDE settings
+.vscode/
+.idea/
+*.swp
+
+# Environment Variables (Security)
+.env
+*.env.local
+EOF
