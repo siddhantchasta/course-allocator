@@ -3,7 +3,7 @@ package handlers
 import (
 	"net/http"
 
-	// Updated import path
+	"course-allocator/internal/pricing"
 	"course-allocator/internal/repository"
 
 	"github.com/gin-gonic/gin"
@@ -50,10 +50,7 @@ func (h *CourseHandler) RegisterCourse(c *gin.Context) {
 	}
 
 	// Calculate credit requirement based on demand
-	creditsRequired := 10
-	if availableSeats <= 50 {
-		creditsRequired = 15 // Surge pricing triggers when 50% of seats are gone
-	}
+	creditsRequired := pricing.Calculate(availableSeats)
 
 	// 2. Execute Atomic Registration Lock
 	success, err := h.repo.RegisterCourseAtomic()
