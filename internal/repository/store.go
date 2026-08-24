@@ -43,6 +43,11 @@ func (r *Repo) SetupDatabase() error {
 
 // ResetCourses resets both PostgreSQL and Redis to 100 seats.
 func (r *Repo) ResetCourses() error {
+	// Ensure table exists in case DB was freshly launched
+	if err := r.SetupDatabase(); err != nil {
+		return err
+	}
+
 	// Reset PostgreSQL state of truth.
 	if _, err := r.db.Exec("TRUNCATE courses"); err != nil {
 		return err
@@ -128,6 +133,10 @@ func (r *Repo) RegisterCourseAtomic() (bool, error) {
 	luaScript := `
 		local seats = tonumber(redis.call("GET", KEYS[1]))
 
+		if not seats then
+			return -1
+		end
+
 		if seats > 0 then
 			redis.call("DECR", KEYS[1])
 			return 1
@@ -144,6 +153,11 @@ func (r *Repo) RegisterCourseAtomic() (bool, error) {
 
 	if err != nil {
 		return false, err
+	}
+
+	if result == -1 {
+		// Key missing or uninitialized in Redis, treat safely as course registration closed
+		return false, nil
 	}
 
 	success := result == 1
