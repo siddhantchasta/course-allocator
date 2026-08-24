@@ -51,6 +51,7 @@ func (rl *RateLimiter) TokenBucketMiddleware() gin.HandlerFunc {
 		redisKey := "rate_limit:" + clientIP
 
 		// Configuration: Allow a burst of 5 requests, refilling at 1 request per second
+		// (Demonstrates Token Bucket rate-limiting under high-concurrency bot spikes)
 		capacity := 5
 		refillRate := 1
 		currentTime := time.Now().Unix()
